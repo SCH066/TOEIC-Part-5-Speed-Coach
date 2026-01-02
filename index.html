@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Part 5 Speed Coach - V1.3 邏輯強化版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --apple-blue: #0071E3;
+            --apple-green: #34C759;
+            --apple-orange: #FF9500;
+            --apple-red: #FF3B30;
+            --apple-gray-bg: #F5F5F7;
+            --apple-gray-border: #E5E5EA;
+            --apple-text: #1D1D1F;
+            --apple-text-secondary: #86868B;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--apple-gray-bg);
+            color: var(--apple-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .onboarding-hero {
+            background: linear-gradient(135deg, var(--apple-blue), #0051BA);
+            color: white;
+            padding: 60px 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .onboarding-hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--apple-text-secondary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--apple-gray-border);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .bento-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bento-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .bento-card-large {
+            grid-column: span 12;
+        }
+
+        .bento-card-medium {
+            grid-column: span 6;
+        }
+
+        .bento-card-small {
+            grid-column: span 4;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--apple-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0077ED;
+            transform: scale(1.02);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            background: #0066D6;
+        }
+
+        .btn-secondary {
+            background: var(--apple-gray-bg);
+            color: var(--apple-text);
+        }
+
+        .btn-secondary:hover {
+            background: #E5E5EA;
+        }
+
+        .quiz-question {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 16px;
+            border: 2px solid var(--apple-gray-border);
+            border-radius: 12px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--apple-blue);
+            background: rgba(0, 113, 227, 0.05);
+        }
+
+        .option-btn.selected {
+            border-color: var(--apple-blue);
+            background: rgba(0, 113, 227, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: var(--apple-green);
+            background: rgba(52, 199, 89, 0.1);
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--apple-red);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-correct {
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 4px solid var(--apple-green);
+        }
+
+        .feedback-incorrect {
+            background: rgba(255, 59, 48, 0.1);
+            border-left: 4px solid var(--apple-red);
+        }
+
+        .feedback-slow {
+            background: rgba(255, 149, 0, 0.1);
+            border-left: 4px solid var(--apple-orange);
+        }
+
+        .analysis-section {
+            margin-top: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .analysis-item {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: var(--apple-gray-bg);
+            border-radius: 6px;
+        }
+
+        .flip-card {
+            background-color: #f1f1f1;
+            width: 200px;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .flip-card-front {
+            background-color: var(--apple-blue);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .flip-card-back {
+            background-color: var(--apple-green);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 14px;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--apple-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag-filter button {
+            padding: 8px 16px;
+            border: 1px solid var(--apple-gray-border);
+            border-radius: 999px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag-filter button.active {
+            background: var(--apple-blue);
+            color: white;
+            border-color: var(--apple-blue);
+        }
+
+        @media (max-width: 768px) {
+            .bento-card-medium,
+            .bento-card-small {
+                grid-column: span 12;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Onboarding Page -->
+        <div id="onboardingPage" class="page active">
+            <div class="onboarding-hero">
+                <h1>🚀 TOEIC Part 5 Speed Coach</h1>
+                <p>科學化訓練，快速提升答題速度與正確率</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <div class="form-group">
+                        <label>您的目標分數</label>
+                        <input type="number" id="targetScore" placeholder="例如：900">
+                    </div>
+                    <div class="form-group">
+                        <label>最近一次成績</label>
+                        <input type="number" id="recentScore" placeholder="例如：750">
+                    </div>
+                    <div class="form-group">
+                        <label>主要弱點領域</label>
+                        <select id="weaknessFocus">
+                            <option value="Tense">時態 (Tense)</option>
+                            <option value="Preposition">介系詞 (Preposition)</option>
+                            <option value="Conjunction">連接詞 (Conjunction)</option>
+                            <option value="PartOfSpeech">詞性 (Part of Speech)</option>
+                            <option value="Vocabulary">字彙 (Vocabulary)</option>
+                            <option value="All">以上皆是 (All of the above)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="startLearningBtn">開始學習</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large" style="background: linear-gradient(135deg, var(--apple-blue), #0051BA); color: white;">
+                    <h2 id="dashboardGreeting">歡迎回來！</h2>
+                    <p id="dashboardStats" style="margin-top: 10px; opacity: 0.9;"></p>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-blue);" id="avgSpeed">-</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">平均速度 (秒)</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-green);" id="correctRate">-</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">正確率</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-orange);" id="completedQuizzes">0</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">已完成測驗</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-red);" id="mistakeCount">0</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">錯題數</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-blue);" id="vocabCount">0</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">收藏單字</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-primary" id="startQuizBtn" style="width: 100%;">▶ 開始測驗</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="viewMistakesBtn" style="width: 100%;">📖 錯題本</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="viewVocabBtn" style="width: 100%;">📌 單字庫</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="settingsBtn" style="width: 100%;">⚙️ 設定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Page -->
+        <div id="quizPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span id="quizProgress">第 1 / 10 題</span>
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--apple-text-secondary);">
+                            <span id="quizTimer">0</span>秒
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" id="questionText">Loading...</div>
+
+                    <div class="quiz-options" id="optionsContainer"></div>
+
+                    <div class="feedback-box" id="feedbackBox">
+                        <div id="feedbackText"></div>
+                        <div class="analysis-section" id="analysisBox"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="saveWordBtn" style="flex: 1; display: none;">📌 收藏單字</button>
+                        <button class="btn btn-primary" id="nextQuestionBtn" style="flex: 1; display: none;">下一題</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Results Page -->
+        <div id="resultsPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large" style="background: linear-gradient(135deg, var(--apple-green), #2ECC71); color: white; text-align: center;">
+                    <h2>完成測驗！</h2>
+                    <div style="font-size: 48px; font-weight: 700; margin: 20px 0;" id="finalScore">0/10</div>
+                    <div style="font-size: 18px; margin-bottom: 20px;">
+                        平均時間：<span id="finalAvgTime">0</span> 秒 | 正確率：<span id="finalAccuracy">0%</span>
+                    </div>
+                    <button class="btn btn-primary" id="backToDashboardBtn" style="background: white; color: var(--apple-green);">返回首頁</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mistake Book Page -->
+        <div id="mistakeBookPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>📖 錯題本</h2>
+                    <div class="tag-filter" id="tagFilter"></div>
+                    <div id="mistakeBookContainer"></div>
+                    <button class="btn btn-secondary" id="backFromMistakesBtn" style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Bank Page -->
+        <div id="wordBankPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>📌 單字庫 (Flip Cards)</h2>
+                    <div id="wordBankContainer" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+                    <button class="btn btn-secondary" id="backFromVocabBtn" style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>⚙️ 設定</h2>
+                    <h3 style="margin-top: 20px; margin-bottom: 10px;">資料管理</h3>
+                    <button class="btn btn-secondary" id="exportCSVBtn" style="width: 100%; margin-bottom: 10px;">📥 匯出資料 (CSV)</button>
+                    <button class="btn btn-secondary" id="exportJSONBtn" style="width: 100%; margin-bottom: 10px;">📥 匯出資料 (JSON)</button>
+                    <button class="btn btn-secondary" id="importJSONBtn" style="width: 100%; margin-bottom: 10px;">📤 匯入資料 (JSON)</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                    <button class="btn btn-secondary" id="resetBtn" style="width: 100%; background: var(--apple-red); color: white;">🔄 重置所有資料</button>
+                    <button class="btn btn-secondary" id="backFromSettingsBtn" style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 翻譯對照表 =====
+        const tagTranslations = {
+            'Tense': '時態',
+            'Preposition': '介系詞',
+            'Conjunction': '連接詞',
+            'PartOfSpeech': '詞性',
+            'Vocabulary': '字彙',
+            'All': '全方位'
+        };
+
+        // ===== 題庫資料 (30 題) =====
+        const questionsDatabase = [
+            {
+                id: 1,
+                text: "She ____ the project before the deadline.",
+                options: ["complete", "completes", "completed", "will complete"],
+                correctIndex: 3,
+                tags: ["Tense", "Future_Simple"],
+                analysis: {
+                    A: "complete - 動詞原形，不符合句子時態需求",
+                    B: "completes - 第三人稱單數現在式，但句子表達未來動作",
+                    C: "completed - 過去式，不符合 'before the deadline' 的未來含義",
+                    D: "will complete - 正確。未來簡單式，表示將來會完成的動作"
+                }
+            },
+            {
+                id: 2,
+                text: "The meeting is scheduled ____ 3 PM tomorrow.",
+                options: ["at", "on", "in", "for"],
+                correctIndex: 0,
+                tags: ["Preposition", "Time"],
+                analysis: {
+                    A: "at - 正確。用於表示具體時間點",
+                    B: "on - 用於日期或星期，不用於時間點",
+                    C: "in - 用於月份、季節或時間段",
+                    D: "for - 表示時間段的長度"
+                }
+            },
+            {
+                id: 3,
+                text: "Although she was tired, ____ she completed the report.",
+                options: ["but", "however", "yet", "still"],
+                correctIndex: 2,
+                tags: ["Conjunction", "Contrast"],
+                analysis: {
+                    A: "but - 不能與 'although' 同時使用",
+                    B: "however - 是副詞，需要分號或句號",
+                    C: "yet - 正確。可與 'although' 搭配表示對比",
+                    D: "still - 副詞，不適合此句型"
+                }
+            },
+            {
+                id: 4,
+                text: "The company ____ its employees to work from home.",
+                options: ["allow", "allows", "allowed", "allowing"],
+                correctIndex: 1,
+                tags: ["Tense", "Present_Simple"],
+                analysis: {
+                    A: "allow - 動詞原形，但主詞是第三人稱單數",
+                    B: "allows - 正確。第三人稱單數現在式",
+                    C: "allowed - 過去式，不符合現在情境",
+                    D: "allowing - 現在分詞，不適合此句型"
+                }
+            },
+            {
+                id: 5,
+                text: "The report must be submitted ____ Friday.",
+                options: ["by", "until", "before", "till"],
+                correctIndex: 0,
+                tags: ["Preposition", "Deadline"],
+                analysis: {
+                    A: "by - 正確。表示截止日期",
+                    B: "until - 表示持續到某時間點",
+                    C: "before - 表示在...之前，但較不正式",
+                    D: "till - 非正式用法"
+                }
+            },
+            {
+                id: 6,
+                text: "I haven't seen him ____ last month.",
+                options: ["since", "for", "during", "within"],
+                correctIndex: 0,
+                tags: ["Preposition", "Time_Period"],
+                analysis: {
+                    A: "since - 正確。用於現在完成式，表示從某時間點開始",
+                    B: "for - 用於時間段長度，不用於時間點",
+                    C: "during - 表示期間內",
+                    D: "within - 表示在...之內"
+                }
+            },
+            {
+                id: 7,
+                text: "The employees ____ working on the new project for three weeks.",
+                options: ["have been", "has been", "are", "is"],
+                correctIndex: 0,
+                tags: ["Tense", "Present_Perfect_Continuous"],
+                analysis: {
+                    A: "have been - 正確。複數主詞 + 現在完成進行式",
+                    B: "has been - 用於第三人稱單數",
+                    C: "are - 現在進行式，不符合 'for three weeks'",
+                    D: "is - 第三人稱單數，不符合複數主詞"
+                }
+            },
+            {
+                id: 8,
+                text: "The manager asked us to ____ the deadline.",
+                options: ["extend", "extends", "extended", "extending"],
+                correctIndex: 0,
+                tags: ["PartOfSpeech", "Verb"],
+                analysis: {
+                    A: "extend - 正確。動詞原形，用於 'ask to' 結構",
+                    B: "extends - 第三人稱單數，不符合此結構",
+                    C: "extended - 過去式，不符合此結構",
+                    D: "extending - 現在分詞，不符合此結構"
+                }
+            },
+            {
+                id: 9,
+                text: "The new software is ____ to use than the old one.",
+                options: ["easy", "easier", "easiest", "more easy"],
+                correctIndex: 1,
+                tags: ["PartOfSpeech", "Adjective_Comparative"],
+                analysis: {
+                    A: "easy - 原級，不符合比較",
+                    B: "easier - 正確。單音節形容詞的比較級",
+                    C: "easiest - 最高級，不符合此句型",
+                    D: "more easy - 不正確，應用 'easier'"
+                }
+            },
+            {
+                id: 10,
+                text: "We need to discuss the proposal ____ the team.",
+                options: ["with", "to", "for", "among"],
+                correctIndex: 0,
+                tags: ["Preposition", "Collaboration"],
+                analysis: {
+                    A: "with - 正確。表示與...一起討論",
+                    B: "to - 不適合此句型",
+                    C: "for - 表示為了...，不符合此意",
+                    D: "among - 表示在...之中，但通常用於多於兩個"
+                }
+            },
+            {
+                id: 11,
+                text: "If I ____ about the meeting, I would have attended.",
+                options: ["knew", "had known", "know", "would know"],
+                correctIndex: 1,
+                tags: ["Tense", "Past_Perfect"],
+                analysis: {
+                    A: "knew - 第二條件句，不符合此結構",
+                    B: "had known - 正確。第三條件句，表示過去的假設",
+                    C: "know - 現在式，不符合此結構",
+                    D: "would know - 條件句，但時態不對"
+                }
+            },
+            {
+                id: 12,
+                text: "The document should be ____ to the client immediately.",
+                options: ["send", "sent", "sending", "sends"],
+                correctIndex: 1,
+                tags: ["Tense", "Passive_Voice"],
+                analysis: {
+                    A: "send - 動詞原形，不符合被動語態",
+                    B: "sent - 正確。被動語態過去分詞",
+                    C: "sending - 現在分詞，不符合被動語態",
+                    D: "sends - 現在式，不符合被動語態"
+                }
+            },
+            {
+                id: 13,
+                text: "The presentation was so ____ that everyone fell asleep.",
+                options: ["bored", "boring", "bores", "bore"],
+                correctIndex: 1,
+                tags: ["PartOfSpeech", "Adjective"],
+                analysis: {
+                    A: "bored - 表示人感到無聊，不符合此句意",
+                    B: "boring - 正確。表示事物令人無聊",
+                    C: "bores - 動詞，不符合此句型",
+                    D: "bore - 動詞原形，不符合此句型"
+                }
+            },
+            {
+                id: 14,
+                text: "We have been waiting ____ the bus for an hour.",
+                options: ["to", "for", "at", "on"],
+                correctIndex: 1,
+                tags: ["Preposition", "Duration"],
+                analysis: {
+                    A: "to - 不適合此句型",
+                    B: "for - 正確。表示時間段長度",
+                    C: "at - 表示位置或時間點",
+                    D: "on - 不適合此句型"
+                }
+            },
+            {
+                id: 15,
+                text: "The CEO ____ the company for over 20 years.",
+                options: ["leads", "lead", "has led", "is leading"],
+                correctIndex: 2,
+                tags: ["Tense", "Present_Perfect"],
+                analysis: {
+                    A: "leads - 現在式，不符合 'for over 20 years'",
+                    B: "lead - 動詞原形，不符合此句型",
+                    C: "has led - 正確。現在完成式，表示從過去持續到現在",
+                    D: "is leading - 現在進行式，不符合此意"
+                }
+            },
+            {
+                id: 16,
+                text: "All employees must comply ____ the new regulations.",
+                options: ["to", "with", "for", "at"],
+                correctIndex: 1,
+                tags: ["Preposition", "Compliance"],
+                analysis: {
+                    A: "to - 不符合 'comply' 的搭配",
+                    B: "with - 正確。'comply with' 是固定搭配",
+                    C: "for - 不符合此句型",
+                    D: "at - 不符合此句型"
+                }
+            },
+            {
+                id: 17,
+                text: "The package will arrive ____ next week.",
+                options: ["in", "on", "at", "by"],
+                correctIndex: 3,
+                tags: ["Preposition", "Time"],
+                analysis: {
+                    A: "in - 用於月份或時間段",
+                    B: "on - 用於具體日期",
+                    C: "at - 用於具體時間點",
+                    D: "by - 正確。表示不遲於某時間"
+                }
+            },
+            {
+                id: 18,
+                text: "Neither the manager ____ the assistant was available.",
+                options: ["nor", "or", "and", "but"],
+                correctIndex: 0,
+                tags: ["Conjunction", "Negation"],
+                analysis: {
+                    A: "nor - 正確。'neither...nor' 是固定搭配",
+                    B: "or - 用於肯定句",
+                    C: "and - 不符合此句型",
+                    D: "but - 表示對比，不符合此句型"
+                }
+            },
+            {
+                id: 19,
+                text: "The training program ____ to improve employee skills.",
+                options: ["design", "designs", "is designed", "designed"],
+                correctIndex: 2,
+                tags: ["Tense", "Passive_Voice"],
+                analysis: {
+                    A: "design - 動詞原形，不符合被動語態",
+                    B: "designs - 現在式，不符合被動語態",
+                    C: "is designed - 正確。被動語態現在式",
+                    D: "designed - 過去分詞，缺少助動詞"
+                }
+            },
+            {
+                id: 20,
+                text: "The contract was signed ____ both parties.",
+                options: ["by", "with", "from", "to"],
+                correctIndex: 0,
+                tags: ["Preposition", "Agency"],
+                analysis: {
+                    A: "by - 正確。被動語態中表示動作執行者",
+                    B: "with - 不符合被動語態結構",
+                    C: "from - 不符合此句型",
+                    D: "to - 不符合此句型"
+                }
+            },
+            {
+                id: 21,
+                text: "I ____ my keys somewhere in the office.",
+                options: ["must lose", "must have lost", "must be losing", "must lose"],
+                correctIndex: 1,
+                tags: ["Tense", "Modal_Perfect"],
+                analysis: {
+                    A: "must lose - 現在式，不符合此推測",
+                    B: "must have lost - 正確。表示對過去事件的推測",
+                    C: "must be losing - 現在進行式，不符合此意",
+                    D: "must lose - 重複選項"
+                }
+            },
+            {
+                id: 22,
+                text: "The new policy will take effect ____ January 1st.",
+                options: ["in", "on", "at", "from"],
+                correctIndex: 1,
+                tags: ["Preposition", "Date"],
+                analysis: {
+                    A: "in - 用於月份",
+                    B: "on - 正確。用於具體日期",
+                    C: "at - 用於時間點",
+                    D: "from - 表示起點"
+                }
+            },
+            {
+                id: 23,
+                text: "The company ____ its headquarters to a new location.",
+                options: ["relocate", "relocates", "has relocated", "is relocating"],
+                correctIndex: 2,
+                tags: ["Tense", "Present_Perfect"],
+                analysis: {
+                    A: "relocate - 動詞原形，不符合此句型",
+                    B: "relocates - 現在式，但句子暗示已完成",
+                    C: "has relocated - 正確。現在完成式",
+                    D: "is relocating - 現在進行式，可能也符合，但 'has relocated' 更強調完成"
+                }
+            },
+            {
+                id: 24,
+                text: "The project was completed ____ schedule.",
+                options: ["on", "in", "at", "by"],
+                correctIndex: 0,
+                tags: ["Preposition", "Schedule"],
+                analysis: {
+                    A: "on - 正確。'on schedule' 是固定搭配",
+                    B: "in - 不符合此搭配",
+                    C: "at - 不符合此搭配",
+                    D: "by - 表示不遲於"
+                }
+            },
+            {
+                id: 25,
+                text: "Either the sales team ____ the marketing team will present.",
+                options: ["or", "nor", "and", "but"],
+                correctIndex: 0,
+                tags: ["Conjunction", "Choice"],
+                analysis: {
+                    A: "or - 正確。'either...or' 是固定搭配",
+                    B: "nor - 用於否定",
+                    C: "and - 表示並列",
+                    D: "but - 表示對比"
+                }
+            },
+            {
+                id: 26,
+                text: "The report should be submitted ____ the end of the month.",
+                options: ["by", "until", "before", "on"],
+                correctIndex: 0,
+                tags: ["Preposition", "Deadline"],
+                analysis: {
+                    A: "by - 正確。表示截止日期",
+                    B: "until - 表示持續到某時間",
+                    C: "before - 可用，但 'by' 更常見",
+                    D: "on - 表示具體日期"
+                }
+            },
+            {
+                id: 27,
+                text: "The employees have been ____ for a salary increase.",
+                options: ["asking", "asked", "ask", "asks"],
+                correctIndex: 0,
+                tags: ["Tense", "Present_Perfect_Continuous"],
+                analysis: {
+                    A: "asking - 正確。現在完成進行式",
+                    B: "asked - 過去分詞，不符合此結構",
+                    C: "ask - 動詞原形，不符合此結構",
+                    D: "asks - 現在式，不符合此結構"
+                }
+            },
+            {
+                id: 28,
+                text: "The meeting was postponed ____ next week.",
+                options: ["to", "until", "for", "in"],
+                correctIndex: 0,
+                tags: ["Preposition", "Time"],
+                analysis: {
+                    A: "to - 正確。表示延期到某時間",
+                    B: "until - 表示持續到某時間",
+                    C: "for - 表示時間段長度",
+                    D: "in - 用於月份或時間段"
+                }
+            },
+            {
+                id: 29,
+                text: "The new software ____ to be user-friendly.",
+                options: ["design", "designs", "is designed", "designed"],
+                correctIndex: 2,
+                tags: ["Tense", "Passive_Voice"],
+                analysis: {
+                    A: "design - 動詞原形，不符合被動語態",
+                    B: "designs - 現在式，不符合被動語態",
+                    C: "is designed - 正確。被動語態現在式",
+                    D: "designed - 過去分詞，缺少助動詞"
+                }
+            },
+            {
+                id: 30,
+                text: "We should discuss this matter ____ the team.",
+                options: ["with", "to", "for", "among"],
+                correctIndex: 0,
+                tags: ["Preposition", "Collaboration"],
+                analysis: {
+                    A: "with - 正確。表示與...一起討論",
+                    B: "to - 不適合此句型",
+                    C: "for - 表示為了...",
+                    D: "among - 表示在...之中"
+                }
+            }
+        ];
+
+        // ===== 全局變數 =====
+        let userProfile = {};
+        let quizHistory = [];
+        let mistakeBook = [];
+        let vocabulary = [];
+        let currentQuizQueue = [];
+        let currentQuestionIndex = 0;
+        let quizStartTime = 0;
+        let questionStartTime = 0;
+        let currentFeedback = null;
+
+        // ===== 初始化 =====
+        function init() {
+            loadDataFromLocalStorage();
+            setupEventListeners();
+            showPage('onboardingPage');
+        }
+
+        // ===== 事件監聽 =====
+        function setupEventListeners() {
+            document.getElementById('startLearningBtn').addEventListener('click', startLearning);
+            document.getElementById('startQuizBtn').addEventListener('click', startQuiz);
+            document.getElementById('nextQuestionBtn').addEventListener('click', nextQuestion);
+            document.getElementById('saveWordBtn').addEventListener('click', saveWord);
+            document.getElementById('backToDashboardBtn').addEventListener('click', () => {
+                showPage('dashboardPage');
+                updateDashboard();
+            });
+            document.getElementById('viewMistakesBtn').addEventListener('click', showMistakeBook);
+            document.getElementById('viewVocabBtn').addEventListener('click', showWordBank);
+            document.getElementById('settingsBtn').addEventListener('click', () => showPage('settingsPage'));
+            document.getElementById('backFromMistakesBtn').addEventListener('click', () => showPage('dashboardPage'));
+            document.getElementById('backFromVocabBtn').addEventListener('click', () => showPage('dashboardPage'));
+            document.getElementById('backFromSettingsBtn').addEventListener('click', () => showPage('dashboardPage'));
+            document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
+            document.getElementById('exportJSONBtn').addEventListener('click', exportToJSON);
+            document.getElementById('importJSONBtn').addEventListener('click', () => document.getElementById('importFile').click());
+            document.getElementById('importFile').addEventListener('change', importFromJSON);
+            document.getElementById('resetBtn').addEventListener('click', resetAllData);
+        }
+
+        // ===== 頁面切換 =====
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+        }
+
+        // ===== 開始學習 =====
+        function startLearning() {
+            const targetScore = document.getElementById('targetScore').value;
+            const recentScore = document.getElementById('recentScore').value;
+            const weakness = document.getElementById('weaknessFocus').value;
+
+            if (!targetScore || !recentScore) {
+                alert('請填寫所有欄位');
+                return;
+            }
+
+            userProfile = {
+                targetScore: parseInt(targetScore),
+                recentScore: parseInt(recentScore),
+                weakness: weakness,
+                startDate: new Date().toISOString()
+            };
+
+            saveDataToLocalStorage();
+            updateDashboard();
+            showPage('dashboardPage');
+        }
+
+        // ===== 更新 Dashboard =====
+        function updateDashboard() {
+            const weaknessText = userProfile.weakness === 'All' ? '全方位' : tagTranslations[userProfile.weakness] || userProfile.weakness;
+            document.getElementById('dashboardGreeting').textContent = `歡迎回來，專注於 ${weaknessText} 訓練！`;
+            document.getElementById('dashboardStats').textContent = `目標分數：${userProfile.targetScore} | 最近成績：${userProfile.recentScore}`;
+
+            if (quizHistory.length > 0) {
+                const avgSpeed = (quizHistory.reduce((sum, q) => sum + q.timeTaken, 0) / quizHistory.length).toFixed(1);
+                const correctCount = quizHistory.filter(q => q.isCorrect).length;
+                const accuracy = ((correctCount / quizHistory.length) * 100).toFixed(1);
+                document.getElementById('avgSpeed').textContent = avgSpeed;
+                document.getElementById('correctRate').textContent = accuracy + '%';
+            } else {
+                document.getElementById('avgSpeed').textContent = '-';
+                document.getElementById('correctRate').textContent = '-';
+            }
+
+            document.getElementById('completedQuizzes').textContent = Math.floor(quizHistory.length / 10);
+            document.getElementById('mistakeCount').textContent = mistakeBook.length;
+            document.getElementById('vocabCount').textContent = vocabulary.length;
+        }
+
+        // ===== 開始測驗 (動態題庫邏輯) =====
+        function startQuiz() {
+            currentQuizQueue = generateQuizQueue();
+            currentQuestionIndex = 0;
+            quizStartTime = Date.now();
+            loadQuestion();
+            showPage('quizPage');
+        }
+
+        // ===== 生成測驗隊列 (加權隨機) =====
+        function generateQuizQueue() {
+            const queue = [];
+            const weakness = userProfile.weakness;
+
+            // 優先加入錯題本中的題目 (最多 3 題)
+            const mistakeQuestions = mistakeBook.slice(0, 3);
+            mistakeQuestions.forEach(mistake => {
+                const question = questionsDatabase.find(q => q.id === mistake.questionId);
+                if (question) queue.push(question);
+            });
+
+            // 從弱點領域篩選題目
+            let candidateQuestions = questionsDatabase.filter(q => {
+                if (weakness === 'All') return true;
+                return q.tags.includes(weakness);
+            });
+
+            // 移除已在隊列中的題目
+            candidateQuestions = candidateQuestions.filter(q => !queue.find(qq => qq.id === q.id));
+
+            // 隨機選擇填滿到 10 題
+            while (queue.length < 10 && candidateQuestions.length > 0) {
+                const randomIndex = Math.floor(Math.random() * candidateQuestions.length);
+                queue.push(candidateQuestions[randomIndex]);
+                candidateQuestions.splice(randomIndex, 1);
+            }
+
+            // 如果題目不足，從全部題庫補充
+            if (queue.length < 10) {
+                let allQuestions = questionsDatabase.filter(q => !queue.find(qq => qq.id === q.id));
+                while (queue.length < 10 && allQuestions.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * allQuestions.length);
+                    queue.push(allQuestions[randomIndex]);
+                    allQuestions.splice(randomIndex, 1);
+                }
+            }
+
+            // 打亂順序
+            return queue.sort(() => Math.random() - 0.5);
+        }
+
+        // ===== 載入題目 =====
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuizQueue.length) {
+                endQuiz();
+                return;
+            }
+
+            const question = currentQuizQueue[currentQuestionIndex];
+            questionStartTime = Date.now();
+
+            document.getElementById('quizProgress').textContent = `第 ${currentQuestionIndex + 1} / 10 題`;
+            document.getElementById('questionText').textContent = question.text;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.addEventListener('click', () => selectOption(index, question));
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('feedbackBox').classList.remove('show');
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('saveWordBtn').style.display = 'none';
+            startTimer();
+        }
+
+        // ===== 計時器 =====
+        function startTimer() {
+            const timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - questionStartTime) / 1000);
+                document.getElementById('quizTimer').textContent = elapsed;
+                if (elapsed > 60) clearInterval(timerInterval);
+            }, 100);
+        }
+
+        // ===== 選擇選項 =====
+        function selectOption(selectedIndex, question) {
+            const timeTaken = Math.floor((Date.now() - questionStartTime) / 1000);
+            const isCorrect = selectedIndex === question.correctIndex;
+            const targetTime = question.tags.includes('Tense') || question.tags.includes('Conjunction') ? 10 : 30;
+            const isTooSlow = timeTaken > targetTime;
+
+            // 記錄答題
+            const record = {
+                questionId: question.id,
+                text: question.text,
+                userAnswer: question.options[selectedIndex],
+                correctAnswer: question.options[question.correctIndex],
+                timeTaken: timeTaken,
+                isCorrect: isCorrect,
+                tags: question.tags,
+                timestamp: new Date().toISOString()
+            };
+            quizHistory.push(record);
+
+            // 如果答錯，加入錯題本
+            if (!isCorrect) {
+                const mistakeRecord = {
+                    questionId: question.id,
+                    text: question.text,
+                    userAnswer: question.options[selectedIndex],
+                    correctAnswer: question.options[question.correctIndex],
+                    tags: question.tags,
+                    analysis: question.analysis,
+                    timestamp: new Date().toISOString()
+                };
+                if (!mistakeBook.find(m => m.questionId === question.id)) {
+                    mistakeBook.push(mistakeRecord);
+                }
+            }
+
+            // 顯示回饋
+            showFeedback(isCorrect, isTooSlow, timeTaken, targetTime, question, selectedIndex);
+            saveDataToLocalStorage();
+        }
+
+        // ===== 顯示回饋 =====
+        function showFeedback(isCorrect, isTooSlow, timeTaken, targetTime, question, selectedIndex) {
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackText = document.getElementById('feedbackText');
+            const analysisBox = document.getElementById('analysisBox');
+
+            let feedbackClass = '';
+            let feedbackMessage = '';
+
+            if (isCorrect && !isTooSlow) {
+                feedbackClass = 'feedback-correct';
+                feedbackMessage = `✓ 完美！ (${timeTaken}秒)`;
+            } else if (isCorrect && isTooSlow) {
+                feedbackClass = 'feedback-slow';
+                feedbackMessage = `✓ 正確，但有點慢 (${timeTaken}秒，目標 ${targetTime}秒)`;
+            } else {
+                feedbackClass = 'feedback-incorrect';
+                feedbackMessage = `✗ 錯誤 (${timeTaken}秒)`;
+            }
+
+            feedbackBox.className = `feedback-box show ${feedbackClass}`;
+            feedbackText.innerHTML = feedbackMessage;
+
+            // 顯示全選項分析
+            analysisBox.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const analysisItem = document.createElement('div');
+                analysisItem.className = 'analysis-item';
+                const optionLabel = String.fromCharCode(65 + index); // A, B, C, D
+                const isSelected = index === selectedIndex;
+                const isCorrectOption = index === question.correctIndex;
+                const analysis = question.analysis[optionLabel] || '';
+                analysisItem.innerHTML = `<strong>${optionLabel}. ${option}</strong> ${isSelected ? '(您的選擇)' : ''} ${isCorrectOption ? '(正確答案)' : ''}<br>${analysis}`;
+                analysisBox.appendChild(analysisItem);
+            });
+
+            // 顯示標籤
+            const tagsHtml = question.tags.map(tag => `<span class="tag">${tagTranslations[tag] || tag}</span>`).join('');
+            analysisBox.innerHTML += `<div style="margin-top: 10px;">${tagsHtml}</div>`;
+
+            document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+            document.getElementById('saveWordBtn').style.display = 'inline-block';
+            currentFeedback = { question, selectedIndex, isCorrect };
+        }
+
+        // ===== 下一題 =====
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // ===== 結束測驗 =====
+        function endQuiz() {
+            const correctCount = quizHistory.slice(-10).filter(q => q.isCorrect).length;
+            const avgTime = (quizHistory.slice(-10).reduce((sum, q) => sum + q.timeTaken, 0) / 10).toFixed(1);
+            const accuracy = ((correctCount / 10) * 100).toFixed(1);
+
+            document.getElementById('finalScore').textContent = `${correctCount}/10`;
+            document.getElementById('finalAvgTime').textContent = avgTime;
+            document.getElementById('finalAccuracy').textContent = accuracy;
+
+            saveDataToLocalStorage();
+            showPage('resultsPage');
+        }
+
+        // ===== 收藏單字 =====
+        function saveWord() {
+            if (!currentFeedback || !currentFeedback.question) return;
+            const word = currentFeedback.question.options[currentFeedback.question.correctIndex];
+            if (!vocabulary.find(v => v.word === word)) {
+                vocabulary.push({
+                    word: word,
+                    definition: `[${tagTranslations[currentFeedback.question.tags[0]] || currentFeedback.question.tags[0]}] ${currentFeedback.question.text}`,
+                    timestamp: new Date().toISOString()
+                });
+                saveDataToLocalStorage();
+                alert('已收藏！');
+            }
+        }
+
+        // ===== 顯示錯題本 =====
+        function showMistakeBook() {
+            const container = document.getElementById('mistakeBookContainer');
+            container.innerHTML = '';
+
+            if (mistakeBook.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--apple-text-secondary);">目前沒有錯題，繼續加油！</p>';
+                showPage('mistakeBookPage');
+                return;
+            }
+
+            // 生成標籤過濾器
+            const allTags = [...new Set(mistakeBook.flatMap(m => m.tags))];
+            const tagFilter = document.getElementById('tagFilter');
+            tagFilter.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.textContent = '全部';
+            allBtn.className = 'active';
+            allBtn.addEventListener('click', () => {
+                document.querySelectorAll('#tagFilter button').forEach(b => b.classList.remove('active'));
+                allBtn.classList.add('active');
+                displayMistakes(mistakeBook);
+            });
+            tagFilter.appendChild(allBtn);
+
+            allTags.forEach(tag => {
+                const btn = document.createElement('button');
+                btn.textContent = tagTranslations[tag] || tag;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#tagFilter button').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filtered = mistakeBook.filter(m => m.tags.includes(tag));
+                    displayMistakes(filtered);
+                });
+                tagFilter.appendChild(btn);
+            });
+
+            displayMistakes(mistakeBook);
+            showPage('mistakeBookPage');
+        }
+
+        // ===== 顯示錯題 =====
+        function displayMistakes(mistakes) {
+            const container = document.getElementById('mistakeBookContainer');
+            container.innerHTML = '';
+            mistakes.forEach((mistake, index) => {
+                const card = document.createElement('div');
+                card.className = 'bento-card bento-card-large';
+                const tagsHtml = mistake.tags.map(tag => `<span class="tag">${tagTranslations[tag] || tag}</span>`).join('');
+                card.innerHTML = `
+                    <h4>第 ${index + 1} 題</h4>
+                    <p style="margin: 10px 0;">${mistake.text}</p>
+                    <div style="margin: 10px 0;">${tagsHtml}</div>
+                    <p style="color: var(--apple-red);">您的答案：${mistake.userAnswer}</p>
+                    <p style="color: var(--apple-green);">正確答案：${mistake.correctAnswer}</p>
+                    <div class="analysis-section">
+                        ${Object.entries(mistake.analysis).map(([key, value]) => `<div class="analysis-item"><strong>${key}.</strong> ${value}</div>`).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 顯示單字庫 =====
+        function showWordBank() {
+            const container = document.getElementById('wordBankContainer');
+            container.innerHTML = '';
+
+            if (vocabulary.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--apple-text-secondary); width: 100%;">目前沒有收藏單字，在測驗中點擊「收藏單字」來新增！</p>';
+                showPage('wordBankPage');
+                return;
+            }
+
+            vocabulary.forEach((word, index) => {
+                const card = document.createElement('div');
+                card.className = 'flip-card';
+                card.innerHTML = `
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div>${word.word}</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div>${word.definition}</div>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => card.classList.toggle('flipped'));
+                container.appendChild(card);
+            });
+
+            showPage('wordBankPage');
+        }
+
+        // ===== CSV 匯出 =====
+        function exportToCSV() {
+            const BOM = '\uFEFF';
+            let csv = BOM + '日期,題目,正確答案,您的答案,用時(秒),結果\n';
+            quizHistory.forEach(record => {
+                const result = record.isCorrect ? '正確' : '錯誤';
+                csv += `"${record.timestamp}","${record.text}","${record.correctAnswer}","${record.userAnswer}",${record.timeTaken},"${result}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'TOEIC_Speed_Coach_Data.csv';
+            link.click();
+        }
+
+        // ===== JSON 匯出 =====
+        function exportToJSON() {
+            const data = {
+                userProfile,
+                quizHistory,
+                mistakeBook,
+                vocabulary,
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'TOEIC_Speed_Coach_Backup.json';
+            link.click();
+        }
+
+        // ===== JSON 匯入 =====
+        function importFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    userProfile = data.userProfile || {};
+                    quizHistory = data.quizHistory || [];
+                    mistakeBook = data.mistakeBook || [];
+                    vocabulary = data.vocabulary || [];
+                    saveDataToLocalStorage();
+                    alert('資料匯入成功！');
+                    updateDashboard();
+                } catch (error) {
+                    alert('匯入失敗：' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ===== 重置所有資料 =====
+        function resetAllData() {
+            if (confirm('確定要重置所有資料嗎？此操作無法撤銷。')) {
+                userProfile = {};
+                quizHistory = [];
+                mistakeBook = [];
+                vocabulary = [];
+                localStorage.removeItem('toeicCoachData');
+                alert('已重置所有資料');
+                showPage('onboardingPage');
+            }
+        }
+
+        // ===== localStorage 操作 =====
+        function saveDataToLocalStorage() {
+            const data = {
+                userProfile,
+                quizHistory,
+                mistakeBook,
+                vocabulary
+            };
+            localStorage.setItem('toeicCoachData', JSON.stringify(data));
+        }
+
+        function loadDataFromLocalStorage() {
+            const data = localStorage.getItem('toeicCoachData');
+            if (data) {
+                const parsed = JSON.parse(data);
+                userProfile = parsed.userProfile || {};
+                quizHistory = parsed.quizHistory || [];
+                mistakeBook = parsed.mistakeBook || [];
+                vocabulary = parsed.vocabulary || [];
+            }
+        }
+
+        // ===== 啟動應用 =====
+        init();
+    </script>
+</body>
+</html>
