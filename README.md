@@ -23,7 +23,7 @@ TOEIC Part 5 Speed Coach 是一款專為多益 (TOEIC) 考生設計的單頁應�
 | **文法 (Grammar)** | **< 10 秒** | 訓練對句型結構、時態、詞性等規則的直覺反應。 |
 | **字彙 (Vocabulary)** | **< 30 秒** | 訓練對詞義、搭配詞 (Collocation) 的快速提取。 |
 
-## ✨ 主要功能特色 (V1.3)
+## ✨ 主要功能特色
 
 ### 🎨 Apple-Style UI
 * 採用 Apple iOS/Health App 的極簡主義設計，搭配 **Bento Grid** (便當盒) 卡片式佈局。
