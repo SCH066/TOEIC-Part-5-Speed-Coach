@@ -10,7 +10,7 @@ TOEIC Part 5 Speed Coach 是一款專為多益 (TOEIC) 考生設計的單頁應�
 
 我們相信，在 75 分鐘內完成 100 題聽力與 100 題閱讀的挑戰中，Part 5 的 30 題必須成為「得分加速器」。本應用程式透過嚴格的計時與科學化的演算法，將您的訓練目標從「答對」提升到「快速答對」。
 
-🔗 **實時演示 (Live Demo):** toeiccoach.zeabur.app
+🔗 **實時演示 (Live Demo):** https://toeiccoach.zeabur.app
 
 ---
 
