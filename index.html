@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Part 5 Speed Coach</title>
+    <!-- [E-03] PWA Meta Tags -->
+    <meta name="description" content="科學化訓練，快速提升 TOEIC Part 5 答題速度與正確率">
+    <meta name="theme-color" content="#0071E3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TOEIC Coach">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Onboarding Page -->
+        <div id="onboardingPage" class="page active">
+            <div class="onboarding-hero">
+                <h1>🚀 TOEIC Part 5 Speed Coach</h1>
+                <p>科學化訓練，快速提升答題速度與正確率</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <div class="form-group">
+                        <label>您的目標分數</label>
+                        <input type="number" id="targetScore" placeholder="例如：900">
+                    </div>
+                    <div class="form-group">
+                        <label>最近一次成績</label>
+                        <input type="number" id="recentScore" placeholder="例如：750">
+                    </div>
+                    <div class="form-group">
+                        <label>主要弱點領域</label>
+                        <select id="weaknessFocus">
+                            <option value="Tense">時態 (Tense)</option>
+                            <option value="Preposition">介系詞 (Preposition)</option>
+                            <option value="Conjunction">連接詞 (Conjunction)</option>
+                            <option value="PartOfSpeech">詞性 (Part of Speech)</option>
+                            <option value="Vocabulary">字彙 (Vocabulary)</option>
+                            <option value="All">以上皆是 (All of the above)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="startLearningBtn">開始學習</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large"
+                    style="background: linear-gradient(135deg, var(--apple-blue), #0051BA); color: white;">
+                    <h2 id="dashboardGreeting">歡迎回來！</h2>
+                    <p id="dashboardStats" style="margin-top: 10px; opacity: 0.9;"></p>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-blue);" id="avgSpeed">-</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">平均速度 (秒)</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-green);" id="correctRate">-
+                        </div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">正確率</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-orange);"
+                            id="completedQuizzes">0</div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">已完成測驗</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-red);" id="mistakeCount">0
+                        </div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">錯題數</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-small">
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: 700; color: var(--apple-blue);" id="vocabCount">0
+                        </div>
+                        <div style="font-size: 12px; color: var(--apple-text-secondary);">收藏單字</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 12px; color: var(--apple-text-secondary); display: block; margin-bottom: 8px;">每輪題數</label>
+                        <div id="quizLengthSelector" style="display: flex; gap: 8px;">
+                            <button class="quiz-length-btn" data-length="3">3 題</button>
+                            <button class="quiz-length-btn active" data-length="5">5 題</button>
+                            <button class="quiz-length-btn" data-length="10">10 題</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="startQuizBtn" style="width: 100%;">▶ 開始測驗</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="viewMistakesBtn" style="width: 100%;">📖 錯題本</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="viewVocabBtn" style="width: 100%;">📌 單字庫</button>
+                </div>
+
+                <div class="bento-card bento-card-medium">
+                    <button class="btn btn-secondary" id="settingsBtn" style="width: 100%;">⚙️ 設定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Page -->
+        <div id="quizPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span id="quizProgress">第 1 / 10 題</span>
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--apple-text-secondary);">
+                            <span id="quizTimer">0</span>秒
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" id="questionText">Loading...</div>
+
+                    <div class="quiz-options" id="optionsContainer"></div>
+
+                    <div class="feedback-box" id="feedbackBox">
+                        <div id="feedbackText"></div>
+                        <div class="analysis-section" id="analysisBox"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="nextQuestionBtn"
+                            style="width: 100%; display: none;">下一題</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Results Page -->
+        <div id="resultsPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large"
+                    style="background: linear-gradient(135deg, var(--apple-green), #2ECC71); color: white; text-align: center;">
+                    <h2>完成測驗！</h2>
+                    <div style="font-size: 48px; font-weight: 700; margin: 20px 0;" id="finalScore">0/10</div>
+                    <div style="font-size: 18px; margin-bottom: 20px;">
+                        平均時間：<span id="finalAvgTime">0</span> 秒 | 正確率：<span id="finalAccuracy">0%</span>
+                    </div>
+                    <button class="btn btn-primary" id="backToDashboardBtn"
+                        style="background: white; color: var(--apple-green);">返回首頁</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mistake Book Page -->
+        <div id="mistakeBookPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>📖 錯題本</h2>
+                    <div class="tag-filter" id="tagFilter"></div>
+                    <div id="mistakeBookContainer"></div>
+                    <button class="btn btn-secondary" id="backFromMistakesBtn"
+                        style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Bank Page -->
+        <div id="wordBankPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>📌 單字庫 (Flip Cards)</h2>
+                    <div id="wordBankContainer" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+                    <button class="btn btn-secondary" id="backFromVocabBtn"
+                        style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page">
+            <div class="bento-grid">
+                <div class="bento-card bento-card-large">
+                    <h2>⚙️ 設定</h2>
+                    <h3 style="margin-top: 20px; margin-bottom: 10px;">資料管理</h3>
+                    <button class="btn btn-secondary" id="exportCSVBtn" style="width: 100%; margin-bottom: 10px;">📥
+                        匯出資料 (CSV)</button>
+                    <button class="btn btn-secondary" id="exportJSONBtn" style="width: 100%; margin-bottom: 10px;">📥
+                        匯出資料 (JSON)</button>
+                    <button class="btn btn-secondary" id="importJSONBtn" style="width: 100%; margin-bottom: 10px;">📤
+                        匯入資料 (JSON)</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                    <button class="btn btn-secondary" id="resetBtn"
+                        style="width: 100%; background: var(--apple-red); color: white;">🔄 重置所有資料</button>
+                    <button class="btn btn-secondary" id="backFromSettingsBtn"
+                        style="width: 100%; margin-top: 20px;">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">提示</h3>
+            <p id="modalMessage">這裡顯示訊息</p>
+            <div class="modal-actions">
+                <button id="modalCancelBtn" class="btn btn-secondary" style="display: none;">取消</button>
+                <button id="modalConfirmBtn" class="btn btn-primary">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/questions.js"></script>
+    <script src="js/app.js"></script>
+    <!-- [E-03] PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>
