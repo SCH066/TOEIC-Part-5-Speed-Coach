@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# SDD 模板（不上傳到專案 repo）
+docs-system/
+
+# Node (如果未來需要)
+node_modules/
+npm-debug.log
+
+# Local dev
+*.log
+*.local
